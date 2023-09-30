@@ -1,0 +1,80 @@
+# This docker-compose file will deploy the ramboe.logging ecosystem which consists of a postgresql database container (to write logs into) and an aspnet core hosted blazor webassembly to display the logs from postgresql.
+# In addition the ramboe.logging ecosystem, this docker-compose file also deploys a traefik instance for automatic SSL certificate creation and routing. Look for the '#adjust' marker to know where to put your own data in.
+
+version: "3.3"
+
+services:
+  
+  # Reverse Proxy +  SSL cert generation
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      # foundation [don't touch]
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      
+      # the email connected to your domain
+      - "--certificatesresolvers.myresolver.acme.email=your.mail@here.com" #adjust
+    # ports [don't touch]
+    ports:
+      - "443:443"
+      - "80:80"
+    # volumes [don't touch]
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      # Dashboard
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.traefik.rule=Host(`traefik.logging.ramboe.de`)" #adjust
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
+      
+      # global redirect to https [don't touch]
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+
+      # middleware redirect [don't touch]
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+  
+  # Blazor Server, hosting WASM, talking to Logging db
+  blazor-server-with-wasm:
+    image: "ramboe/ramboelogging-server:1.0.0" #adjust
+    container_name: "blazor-server-with-wasm"
+    depends_on:
+      - logging-db
+    ports:
+      - "80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - "ConnectionStrings:Logging=Host=logging-db; Port=5432; Database=postgres; Username=postgres; Password=password"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.blazor-server-with-wasm.rule=Host(`logging.ramboe.de`)" #adjust -  Change the host url here
+      - "traefik.http.routers.blazor-server-with-wasm.entrypoints=websecure"
+      - "traefik.http.routers.blazor-server-with-wasm.tls.certresolver=myresolver"
+  
+  # postgres sql container
+  logging-db:
+    container_name: "logging-db"
+    image: postgres:14.1-alpine
+    restart: always
+    environment: #adjust
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local
