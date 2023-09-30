@@ -50,7 +50,7 @@ services:
   
   # Blazor Server, hosting WASM, talking to Logging db
   blazor-server-with-wasm:
-    image: "ramboe/ramboelogging-server:1.0.0" #adjust
+    image: "ramboe/ramboe-logging-blazor-server:1.0.0" #adjust (if you want to use your own image)
     container_name: "blazor-server-with-wasm"
     depends_on:
       - logging-db
