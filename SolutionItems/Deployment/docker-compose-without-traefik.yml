@@ -1,0 +1,30 @@
+# This docker-compose file will deploy the ramboe.logging ecosystem which consists of a postgresql database container (to write logs into) and an aspnet core hosted blazor webassembly to display the logs from postgresql.
+version: "3.3"
+
+services:
+  blazor-server-with-wasm:
+    image: "ramboe/ramboelogging-server:1.0.0"
+    container_name: "blazor-server-with-wasm"
+    depends_on:
+      - logging-db
+    ports:
+      - "80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - "ConnectionStrings:Logging=Host=logging-db; Port=5432; Database=postgres; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
+  
+  logging-db:
+    container_name: "logging-db"
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local

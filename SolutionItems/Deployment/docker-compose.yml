@@ -1,4 +1,7 @@
 # This docker-compose file will deploy the ramboe.logging ecosystem which consists of a postgresql database container (to write logs into) and an aspnet core hosted blazor webassembly to display the logs from postgresql.
+
+# When executing the docker-compose file, make sure to supply a '.env' file (that contains values for POSTGRES_USER and POSTGRES_PASSWORD) in the same directory
+
 # In addition the ramboe.logging ecosystem, this docker-compose file also deploys a traefik instance for automatic SSL certificate creation and routing. Look for the '#adjust' marker to know where to put your own data in.
 
 version: "3.3"
@@ -55,7 +58,7 @@ services:
       - "80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - "ConnectionStrings:Logging=Host=logging-db; Port=5432; Database=postgres; Username=postgres; Password=password"
+      - "ConnectionStrings:Logging=Host=logging-db; Port=5432; Database=postgres; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.blazor-server-with-wasm.rule=Host(`logging.ramboe.de`)" #adjust -  Change the host url here
@@ -68,8 +71,8 @@ services:
     image: postgres:14.1-alpine
     restart: always
     environment: #adjust
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
     ports:
       - '5432:5432'
     volumes:
