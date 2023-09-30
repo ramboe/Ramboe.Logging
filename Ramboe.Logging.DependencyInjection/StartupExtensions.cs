@@ -77,13 +77,11 @@ public static class StartupExtensions
                      .CreateLogger();
     }
 
-    public static IServiceCollection AddTypedRamboeLoggingHttpClient<T>(this IServiceCollection services, string baseAddress) where T : class
+    public static IHttpClientBuilder AddTypedRamboeLoggingHttpClient<T>(this IServiceCollection services, string baseAddress) where T : class
     {
-        services.AddHttpClient<T>()
-                .AddHttpMessageHandler<RamboeTraceIdentifierHandler>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseAddress));
-
-        return services;
+        return services.AddHttpClient<T>()
+                       .AddHttpMessageHandler<RamboeTraceIdentifierHandler>()
+                       .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseAddress));
     }
 
     public static IApplicationBuilder UseRamboeExceptionLoggingMiddleware(this IApplicationBuilder app)

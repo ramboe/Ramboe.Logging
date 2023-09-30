@@ -8,10 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 #region ramboe logging
 var connectionString = builder.Configuration.GetValue<string>("ConnectionStrings:Logging");
 
+//Make this service log errors into postgres
 builder.Services.AddRamboeLogging(connectionString, LogEventLevel.Error);
 builder.Host.UseSerilog();
 
-builder.Services.AddTypedRamboeLoggingHttpClient<HttpWebService2Client>("https://localhost:7100");
+//Add tracable http header to outgoing http requests to track errors across multiple services
+builder.Services
+       .AddTypedRamboeLoggingHttpClient<HttpWebService2Client>("https://localhost:7100");
 #endregion
 
 var app = builder.Build();
