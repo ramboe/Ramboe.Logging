@@ -1,9 +1,50 @@
 ﻿@page "/"
+@using Ramboe.Logging.Blazor.Client.Data
+@inherits TryWrapper
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Dashboard</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudText Typo="Typo.h3" Class="my-4">Dashboard</MudText>
 
-Welcome to your new app.
+<MudButton ButtonType="ButtonType.Button"
+           Variant="Variant.Filled"
+           OnClick="() => TryAsync(HttpLogClient.GetServices)"
+           FullWidth="true"
+           Color="Color.Primary"
+           Class="ml-auto my-4">
+    Refresh
+</MudButton>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (Loading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+else
+{
+    if (Services is not null)
+    {
+        <MudGrid Spacing="2" Justify="Justify.FlexStart">
+
+            @foreach (var service in Services)
+            {
+                <MudItem xs="6">
+                    <ServicePieChart ServiceName="@service" />
+                </MudItem>
+            }
+
+        </MudGrid>
+    }
+}
+
+@code
+{
+    [Inject]
+    public HttpLogClient HttpLogClient { get; set; }
+
+    public IEnumerable<string>? Services { get; set; } = new List<string>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Services = await TryAsync(HttpLogClient.GetServices);
+    }
+}

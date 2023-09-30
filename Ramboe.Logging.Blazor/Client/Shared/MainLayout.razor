@@ -1,17 +1,75 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.LocalStorage
+@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+<MudLayout>
+    <AuthorizeView>
+        <Authorized>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+            <MudAppBar>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                RamboeLogging
+                <MudSpacer />
+
+                @if (Loading)
+                {
+                    <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-7" />
+                }
+                else
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.DoorBack" Color="Color.Inherit" Edge="Edge.Start" OnClick="Logout" />
+                }
+
+            </MudAppBar>
+            <MudDrawer @bind-Open="@_drawerOpen">
+                <NavMenu />
+            </MudDrawer>
+        </Authorized>
+    </AuthorizeView>
+    <MudMainContent Class="my-4 px-4">
+        <AuthorizeView>
+            <Authorized>
+                @Body
+            </Authorized>
+            <NotAuthorized>
+                <LoginForm />
+            </NotAuthorized>
+        </AuthorizeView>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+
+    [Inject]
+    public ILocalStorageService LocalStorageService { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    bool _drawerOpen = true;
+
+    public bool Loading { get; set; }
+
+    async Task Logout()
+    {
+        Loading = true;
+
+        await LocalStorageService.RemoveItemAsync(Constants.STORAGE_TOKENKEY);
+
+        await Task.Delay(500);
+
+        Loading = false;
+
+        NavigationManager.NavigateTo(NavigationManager.BaseUri, true);
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+
+}

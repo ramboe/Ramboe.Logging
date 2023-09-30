@@ -1,0 +1,54 @@
+﻿@using Ramboe.Logging.Blazor.Client.Data
+@inherits TryWrapper
+
+
+<MudPaper Class="pa-4">
+    <MudText Typo="Typo.h5" Class="my-4">@ServiceName</MudText>
+
+    @if (Loading)
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+    else
+    {
+        <MudChart ChartType="ChartType.Pie"
+                  InputData="@data"
+                  @bind-SelectedIndex="chartIndex"
+                  InputLabels="@labels"
+                  Width="250px"
+                  Height="250px" />
+    }
+</MudPaper>
+
+@code {
+
+    [Inject]
+    public HttpLogClient HttpLogClient { get; set; }
+
+    [Parameter]
+    public string ServiceName { get; set; }
+
+    double[] data =
+    {
+    };
+
+    string[] labels =
+    {
+    };
+
+    public int chartIndex { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await TryAsync(FillChart);
+    }
+
+    async Task FillChart()
+    {
+        var theList = await HttpLogClient.GetDashBoardDataForService(ServiceName);
+
+        data = theList.Select(d => (double) d.level_count).ToArray();
+        labels = theList.Select(d => d.level + ": " + d.level_count).ToArray();
+    }
+
+}

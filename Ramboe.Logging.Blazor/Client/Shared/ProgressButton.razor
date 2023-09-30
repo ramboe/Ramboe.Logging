@@ -1,0 +1,9 @@
+﻿<MudButton Variant="Variant.Filled" Color="Color.Default" OnClick="Clicked">
+    @if (Loading)
+    {
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+    <MudText>
+        @Text
+    </MudText>
+</MudButton>

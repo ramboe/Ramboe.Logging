@@ -1,0 +1,80 @@
+﻿@inherits TryWrapper
+
+
+<ProgressButton Clicked="OnButtonClicked" Text="@LogModel.Id" Loading="Loading" />
+
+
+<MudMessageBox @ref="mbox" Title="@LogModel.Id" CancelText="Cancel" Style="width: 70% !important;">
+    <MessageContent>
+        <MudCard Outlined="true" Class="my-4">
+            <MudCardContent>
+                <MudText Typo="Typo.body1" Color="Color.Error">
+                    @LogModel.message_short
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+        <MudGrid Spacing="1" Justify="Justify.SpaceEvenly">
+            <MudItem>
+                <MudChip OnClick="NavigateToWebserviceView" Color="Color.Info">@LogModel.service</MudChip>
+            </MudItem>
+            <MudItem Class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" />
+            </MudItem>
+            <MudItem>
+                <MudChip Color="Color.Default">@LogModel.http_verb</MudChip>
+            </MudItem>
+            <MudItem Class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" />
+            </MudItem>
+            <MudItem>
+                <MudChip Color="Color.Default">@LogModel.http_path</MudChip>
+            </MudItem>
+            <MudItem Class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" />
+            </MudItem>
+            <MudItem>
+                <MudChip Color="Color.Error">@LogModel.location_in_stacktrace</MudChip>
+                @* <MudChip OnClick="NavigateToWebserviceView" Color="Color.Error">@LogModel.location_in_stacktrace</MudChip> *@
+            </MudItem>
+        </MudGrid>
+
+        @if (string.IsNullOrEmpty(LogModel.http_queryparams) is not true)
+        {
+            <MudTextField Lines="1" Class="my-4" Style="font-size: 11px; font-family: 'Courier New';" @bind-Value="@LogModel.http_queryparams" Label="Query Parameters" ReadOnly="true" Variant="Variant.Outlined" />
+        }
+        @if (string.IsNullOrEmpty(LogModel.http_body) is not true)
+        {
+            <MudTextField Lines="8" Class="my-4" Style="font-size: 11px; font-family: 'Courier New';" @bind-Value="@LogModel.http_body" Label="HTTP Body" ReadOnly="true" Variant="Variant.Outlined" />
+        }
+
+
+        @if (AllLogsWithThisId.Length > 1)
+        {
+            <MudText Typo="Typo.h6" Class="my-4">all occurences</MudText>
+            <MudTable Items="@AllLogsWithThisId" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@Loading" LoadingProgressColor="Color.Info">
+                <HeaderContent>
+                    <MudTh>service</MudTh>
+                    <MudTh>message_short</MudTh>
+                    <MudTh>location</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Nr">@context.service</MudTd>
+                    <MudTd DataLabel="Sign">@context.message_short</MudTd>
+                    <MudTd DataLabel="Sign">@context.location_in_stacktrace</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+
+
+        <MudText Typo="Typo.h6" Class="my-4">Full Stack Trace</MudText>
+        <MudTextField Lines="8" Class="my-4" Style="font-size: 11px; font-family: 'Courier New';" @bind-Value="@LogModel.stack_trace" ReadOnly="true" Variant="Variant.Outlined" />
+
+    </MessageContent>
+    <NoButton>
+    </NoButton>
+    <YesButton>
+    </YesButton>
+    <CancelButton>
+        <MudButton Variant="Variant.Text" Color="Color.Transparent">Close</MudButton>
+    </CancelButton>
+</MudMessageBox>

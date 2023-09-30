@@ -7,13 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.11"/>
+        <PackageReference Include="Dapper" Version="2.0.151"/>
+        <PackageReference Include="Npgsql" Version="7.0.6"/>
+        <PackageReference Include="Npgsql.DependencyInjection" Version="7.0.6"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Client\Ramboe.Logging.Blazor.Client.csproj"/>
         <ProjectReference Include="..\Shared\Ramboe.Logging.Blazor.Shared.csproj"/>
     </ItemGroup>
-
+    <ItemGroup>
+        <None Update="sql\createTableIfNotExisting.sql">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>

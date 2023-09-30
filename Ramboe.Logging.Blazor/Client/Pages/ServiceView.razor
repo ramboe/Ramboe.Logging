@@ -1,0 +1,59 @@
+﻿@inherits TryWrapper
+@page "/Logs/Views/Service/{servicename}"
+
+<MudButton ButtonType="ButtonType.Button"
+           Variant="Variant.Filled"
+           OnClick="Refresh"
+           FullWidth="true"
+           Color="Color.Primary"
+           Class="ml-auto">
+    Refresh
+</MudButton>
+
+<MudDataGrid Loading="Loading"
+             T="LogModel"
+             MultiSelection="true"
+             Items="@LogsFromApi"
+             Class="my-4"
+             Virtualize="true"
+             SortMode="SortMode.Multiple"
+             Filterable="true"
+             QuickFilter="@_quickFilter"
+             Hideable="true"
+             SelectedItemsChanged="@UpdateSelectedItems">
+    <ToolBarContent>
+        <MudText Typo="Typo.h5">Logs: @ServiceName</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="LogModel" />
+
+        <TemplateColumn T="LogModel" Title="Id">
+            <CellTemplate>
+                <LogMessageBox LogModel="@context.Item" />
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.raise_date" />
+        <PropertyColumn Property="x => x.level" SortBy="@_sortBy" />
+        <PropertyColumn Property="x => x.message_short" />
+        <PropertyColumn Property="x => x.location_in_stacktrace" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="LogModel" />
+    </PagerContent>
+</MudDataGrid>
+
+
+@if (SelectedItems.Count > 0)
+{
+    <MudButton ButtonType="ButtonType.Button"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               OnClick="MarkAsDoneAndRefresh"
+               Class="ml-auto">
+        Mark as Done
+    </MudButton>
+}

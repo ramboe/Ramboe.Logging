@@ -1,40 +1,39 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Ramboe.Logging.Blazor</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@inherits TryWrapper
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+<MudNavMenu Bordered="true" Margin="Margin.Normal">
+    @if (Loading)
     {
-        collapseNavMenu = !collapseNavMenu;
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else
+    {
+        <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+        <MudNavLink Href="/logs" Match="NavLinkMatch.All">All Logs</MudNavLink>
+        <MudNavGroup Title="Logs by Level" Expanded="true">
+            @foreach (var logLevel in LogLevels)
+            {
+                var url = "/logs/" + logLevel;
+
+                <MudNavLink Href="@url" Match="NavLinkMatch.All">@logLevel</MudNavLink>
+            }
+        </MudNavGroup>
+        <MudNavGroup Title="Logs by WebService" Expanded="true">
+            @foreach (var webService in WebServices)
+            {
+                var url = "/logs/views/service/" + webService;
+
+                <MudNavLink Href="@url" Match="NavLinkMatch.All">@webService</MudNavLink>
+            }
+        </MudNavGroup>
     }
 
-}
+</MudNavMenu>
+<MudSpacer />
+<MudButton ButtonType="ButtonType.Button"
+           Variant="Variant.Text"
+           FullWidth="true"
+           Color="Color.Primary"
+           OnClick="() => TryAsync(LoadLevelsAndServices)"
+           Class="ml-auto my-4 py-2">
+    Refresh
+</MudButton>
