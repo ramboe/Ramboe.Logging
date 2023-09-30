@@ -11,7 +11,6 @@ using Serilog.Sinks.PostgreSQL;
 
 namespace Ramboe.Logging.DependencyInjection;
 
-// TODO: into nuget package
 public static class StartupExtensions
 {
     /// <summary>
