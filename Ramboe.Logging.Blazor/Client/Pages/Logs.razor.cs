@@ -120,7 +120,10 @@ public partial class Logs
         else
         {
             // BackgroundColorForDoubles = ColorHelper.DarkenHexColor(BackgroundColorForDoubles, percentage);
-            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#6099EB");
+            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#C6DBE9");
             Colors.Add(x.Id, BackgroundColorForDoubles);
         }
 
