@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,11 +23,17 @@ public static class StartupExtensions
     /// <param name="services"></param>
     /// <param name="connectionString"></param>
     /// <param name="logEventLevel"></param>
-    /// <param name="serviceName"></param>
+    /// <param name="serviceName">optional, will take DllName if not provided</param>
+    /// <param name="enableSelfLoggingIntoConsole">provide 'true' if there is a need to see the serilog logs (helpful for debuggign if logs don't get written properly)</param>
     /// <returns></returns>
-    public static IServiceCollection AddRamboeLogging(this IServiceCollection services, string connectionString, LogEventLevel logEventLevel, string serviceName,
+    public static IServiceCollection AddRamboeLogging(this IServiceCollection services, string connectionString, LogEventLevel logEventLevel, string serviceName = null,
         bool enableSelfLoggingIntoConsole = false)
     {
+        if (string.IsNullOrEmpty(serviceName))
+        {
+            serviceName = getServiceNameFromDll();
+        }
+
         //Middleware to handle and log exceptions that come up in the current web service
         services.AddTransient<RamboeExceptionHandlerMiddleware>(provider =>
             new RamboeExceptionHandlerMiddleware(provider.GetService<ILogger<RamboeExceptionHandlerMiddleware>>(), serviceName));
@@ -88,5 +95,16 @@ public static class StartupExtensions
         });
 
         return app.UseMiddleware<RamboeExceptionHandlerMiddleware>();
+    }
+
+    static string getServiceNameFromDll()
+    {
+        // Get the assembly information for the entry assembly (which is typically the API project)
+        var assembly = Assembly.GetEntryAssembly();
+
+        // Get the assembly name
+        var assemblyName = assembly.GetName();
+
+        return assemblyName.Name;
     }
 }

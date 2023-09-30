@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ramboe.Logging.Blazor.Clien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ramboe.Logging.Blazor.Shared", "Ramboe.Logging.Blazor\Shared\Ramboe.Logging.Blazor.Shared.csproj", "{9E0F6064-D5CD-484D-87EF-B7252C49C2A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebService1", "WebService1\WebService1.csproj", "{1C346DAD-334E-4C0E-A796-C07CCBF60505}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{9E0F6064-D5CD-484D-87EF-B7252C49C2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E0F6064-D5CD-484D-87EF-B7252C49C2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E0F6064-D5CD-484D-87EF-B7252C49C2A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C346DAD-334E-4C0E-A796-C07CCBF60505}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C346DAD-334E-4C0E-A796-C07CCBF60505}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C346DAD-334E-4C0E-A796-C07CCBF60505}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C346DAD-334E-4C0E-A796-C07CCBF60505}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
