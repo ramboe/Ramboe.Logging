@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
 using Ramboe.Logging.Blazor.Client.Data;
 using Ramboe.Logging.Blazor.Shared;
@@ -17,8 +18,9 @@ public partial class Logs
     {
     };
 
-
     HashSet<LogModel> SelectedItems { get; set; } = new HashSet<LogModel>();
+
+    public string BackgroundColorForDoubles { get; set; } = "#258cfb";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -100,4 +102,28 @@ public partial class Logs
     {
         SelectedItems = items;
     }
+
+    public Dictionary<string, string> Colors { get; set; } = new();
+
+    private Func<LogModel, int, string> _rowStyleFunc => (x, i) => {
+        if (LogsFromApi.Count(log => log.Id == x.Id) <= 1)
+        {
+            return "";
+        }
+
+        double percentage = 15;
+
+        if (Colors.ContainsKey(x.Id))
+        {
+            BackgroundColorForDoubles = Colors[x.Id];
+        }
+        else
+        {
+            // BackgroundColorForDoubles = ColorHelper.DarkenHexColor(BackgroundColorForDoubles, percentage);
+            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
+            Colors.Add(x.Id, BackgroundColorForDoubles);
+        }
+
+        return $"background-color: {BackgroundColorForDoubles}";
+    };
 }

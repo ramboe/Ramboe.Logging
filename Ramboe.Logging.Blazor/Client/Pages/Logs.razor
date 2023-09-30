@@ -19,6 +19,7 @@
              Virtualize="true"
              SortMode="SortMode.Multiple"
              Filterable="true"
+             RowStyleFunc="_rowStyleFunc"
              QuickFilter="@_quickFilter"
              Hideable="true"
              RowClick="@RowClicked"
@@ -33,7 +34,7 @@
     <Columns>
         <SelectColumn T="LogModel" />
 
-        <TemplateColumn T="LogModel" Title="Id">
+        <TemplateColumn T="LogModel" Title="Id" Style="background-color: #26b050">
             <CellTemplate>
                 <LogMessageBox LogModel="@context.Item" />
             </CellTemplate>

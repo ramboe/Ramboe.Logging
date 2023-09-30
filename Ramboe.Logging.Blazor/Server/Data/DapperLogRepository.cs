@@ -18,9 +18,19 @@ public class DapperLogRepository : ILogRepository, IDisposable
         _connection.Open();
     }
 
+    #region sortById
+    public async Task<IEnumerable<LogModel>> GetByLevel(string level)
+    {
+        var commandText = $"SELECT * FROM logs WHERE lower(level) = lower('{level}') order by id, raise_date desc";
+
+        var logs = await _connection.QueryAsync<LogModel>(commandText);
+
+        return logs;
+    }
+
     public async Task<IEnumerable<LogModel>> GetAll()
     {
-        var commandText = "SELECT * FROM logs";
+        var commandText = "SELECT * FROM logs order by id, raise_date desc";
 
         try
         {
@@ -40,6 +50,16 @@ public class DapperLogRepository : ILogRepository, IDisposable
             return Array.Empty<LogModel>();
         }
     }
+
+    public async Task<IEnumerable<LogModel>> GetByWebservice(string servicename)
+    {
+        var commandText = $"SELECT * FROM logs WHERE lower(service) = lower('{servicename}') order by id, raise_date desc";
+
+        var logs = await _connection.QueryAsync<LogModel>(commandText);
+
+        return logs;
+    }
+    #endregion
 
     public async Task<IEnumerable<LogModel>> GetById(string id)
     {
@@ -61,38 +81,20 @@ public class DapperLogRepository : ILogRepository, IDisposable
 
     public async Task MarkAsDone(string id)
     {
-        var commandText = $@"UPDATE logs SET level = @level WHERE id = @id";
+        var commandText = "UPDATE logs SET level = @level WHERE id = @id";
 
         var queryArgs = new
         {
-            id = id,
+            id,
             level = "Done",
         };
 
         await _connection.ExecuteAsync(commandText, queryArgs);
     }
 
-    public async Task<IEnumerable<LogModel>> GetByLevel(string level)
-    {
-        var commandText = $"SELECT * FROM logs WHERE lower(level) = lower('{level}')";
-
-        var logs = await _connection.QueryAsync<LogModel>(commandText);
-
-        return logs;
-    }
-
-    public async Task<IEnumerable<LogModel>> GetByWebservice(string servicename)
-    {
-        var commandText = $"SELECT * FROM logs WHERE lower(service) = lower('{servicename}')";
-
-        var logs = await _connection.QueryAsync<LogModel>(commandText);
-
-        return logs;
-    }
-
     public async Task<IEnumerable<string>> GetServices()
     {
-        var commandText = $"SELECT DISTINCT service FROM logs order by service";
+        var commandText = "SELECT DISTINCT service FROM logs order by service";
 
         var services = await _connection.QueryAsync<string>(commandText);
 
@@ -101,7 +103,7 @@ public class DapperLogRepository : ILogRepository, IDisposable
 
     public async Task<IEnumerable<string>> GetLogLevels()
     {
-        var commandText = $"SELECT DISTINCT level FROM logs order by level";
+        var commandText = "SELECT DISTINCT level FROM logs order by level";
 
         var services = await _connection.QueryAsync<string>(commandText);
 
