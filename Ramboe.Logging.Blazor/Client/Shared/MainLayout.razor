@@ -1,7 +1,7 @@
 ﻿@using Blazored.LocalStorage
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="MyTheme" IsDarkMode="true" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -9,7 +9,7 @@
     <AuthorizeView>
         <Authorized>
 
-            <MudAppBar>
+            <MudAppBar Elevation="0">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
                 RamboeLogging
                 <MudSpacer />
@@ -24,7 +24,8 @@
                 }
 
             </MudAppBar>
-            <MudDrawer @bind-Open="@_drawerOpen">
+            @* <MudDrawer @bind-Open="@_drawerOpen"> *@
+            <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Docked" Elevation="0">
                 <NavMenu />
             </MudDrawer>
         </Authorized>
@@ -53,6 +54,53 @@
 
     public bool Loading { get; set; }
 
+    public MudTheme MyTheme { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var primary = Colors.Purple.Darken3;
+        var secondary = Colors.Purple.Darken4;
+
+    // var primaryDark = Colors.Grey.Lighten1;
+        var primaryDark = Colors.DeepPurple.Accent1;
+        var secondaryDark = Colors.DeepPurple.Lighten1;
+
+        MyTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = primary,
+                Secondary = secondary,
+                AppbarBackground = primary,
+            },
+            Typography = new Typography
+            {
+                Default = new Default
+                {
+                    FontFamily = new[]
+                    {
+    // "Poppins", "Helvetica", "Arial", "sans-serif"
+    // "Exo 2", "Helvetica", "Arial", "sans-serif"
+    // "Segoe UI", "Helvetica", "Arial", "sans-serif"
+                        "Inconsolata", "Monospace"
+                    }
+                },
+            },
+            PaletteDark = new PaletteDark()
+            {
+    // Primary = Colors.Blue.Lighten1
+                Primary = primaryDark,
+                Secondary = secondaryDark,
+            },
+            LayoutProperties = new LayoutProperties()
+            {
+                DrawerWidthLeft = "260px",
+                DrawerWidthRight = "300px",
+                DefaultBorderRadius = "0px",
+            }
+        };
+    }
+
     async Task Logout()
     {
         Loading = true;
@@ -70,6 +118,5 @@
     {
         _drawerOpen = !_drawerOpen;
     }
-
 
 }

@@ -19,7 +19,7 @@
              Virtualize="true"
              SortMode="SortMode.Multiple"
              Filterable="true"
-             RowStyleFunc="_rowStyleFunc"
+             Elevation="1"
              QuickFilter="@_quickFilter"
              Hideable="true"
              RowClick="@RowClicked"
@@ -32,18 +32,18 @@
         </MudTextField>
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="LogModel" />
+        <SelectColumn T="LogModel" Size="Size.Small" />
 
-        <TemplateColumn T="LogModel" Title="Id" Style="background-color: #26b050">
+        <TemplateColumn T="LogModel" Title="Id" CellStyleFunc="_cellStyleFunc">
             <CellTemplate>
                 <LogMessageBox LogModel="@context.Item" />
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.raise_date" />
-        <PropertyColumn Hidden="!(string.IsNullOrEmpty(Level))" Property="x => x.level" SortBy="@_sortBy" />
-        <PropertyColumn Property="x => x.service" />
-        <PropertyColumn Property="x => x.message_short" />
-        <PropertyColumn Property="x => x.location_in_stacktrace" />
+        <PropertyColumn Property="x => x.raise_date" CellStyleFunc="_cellStyleFunc" />
+        <PropertyColumn Hidden="!(string.IsNullOrEmpty(Level))" Property="x => x.level" SortBy="@_sortBy" CellStyleFunc="_cellStyleFunc"/>
+        <PropertyColumn Property="x => x.service" CellStyleFunc="_cellStyleFunc"/>
+        <PropertyColumn Property="x => x.message_short" CellStyleFunc="_cellStyleFunc"/>
+        <PropertyColumn Property="x => x.location_in_stacktrace" CellStyleFunc="_cellStyleFunc"/>
     </Columns>
     <PagerContent>
         <MudDataGridPager T="LogModel" />

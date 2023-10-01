@@ -105,6 +105,33 @@ public partial class Logs
 
     public Dictionary<string, string> Colors { get; set; } = new();
 
+    private Func<LogModel, string> _cellStyleFunc => (x) => {
+        if (LogsFromApi.Count(log => log.Id == x.Id) <= 1)
+        {
+            return "";
+        }
+
+        double percentage = 15;
+
+        if (Colors.ContainsKey(x.Id))
+        {
+            BackgroundColorForDoubles = Colors[x.Id];
+        }
+        else
+        {
+            // BackgroundColorForDoubles = ColorHelper.DarkenHexColor(BackgroundColorForDoubles, percentage);
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
+            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#6099EB");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#1a66d2");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#C6DBE9");
+            Colors.Add(x.Id, BackgroundColorForDoubles);
+        }
+
+        return $"background-color: {BackgroundColorForDoubles}; color: #fff;";
+    };
+
     private Func<LogModel, int, string> _rowStyleFunc => (x, i) => {
         if (LogsFromApi.Count(log => log.Id == x.Id) <= 1)
         {
@@ -121,12 +148,14 @@ public partial class Logs
         {
             // BackgroundColorForDoubles = ColorHelper.DarkenHexColor(BackgroundColorForDoubles, percentage);
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
-            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#6099EB");
-            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#C6DBE9");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#1a66d2");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#C6DBE9");
             Colors.Add(x.Id, BackgroundColorForDoubles);
         }
 
-        return $"background-color: {BackgroundColorForDoubles}";
+        return $"background-color: {BackgroundColorForDoubles}; color: #ffffff;";
     };
 }
