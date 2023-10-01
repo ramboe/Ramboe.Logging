@@ -85,51 +85,51 @@ public class ColorHelper
     //     return (randomR << 16) | (randomG << 8) | randomB;
     // }
     
-      public static string GenerateRandomColor(string hexColor)
-    {
-        // Validate input
-        if (hexColor.Length != 7 || hexColor[0] != '#')
-        {
-            throw new ArgumentException("Invalid hex color code");
-        }
+    //   public static string GenerateRandomColor(string hexColor)
+    // {
+    //     // Validate input
+    //     if (hexColor.Length != 7 || hexColor[0] != '#')
+    //     {
+    //         throw new ArgumentException("Invalid hex color code");
+    //     }
+    //
+    //     // Parse the hex color
+    //     int baseColor = Convert.ToInt32(hexColor.Substring(1), 16);
+    //
+    //     // Generate a random color in the same color family
+    //     int randomColor = GenerateRandomColor(baseColor);
+    //
+    //     // Convert back to hex format
+    //     string newHexColor = $"#{randomColor:X6}";
+    //
+    //     return newHexColor;
+    // }
 
-        // Parse the hex color
-        int baseColor = Convert.ToInt32(hexColor.Substring(1), 16);
-
-        // Generate a random color in the same color family
-        int randomColor = GenerateRandomColor(baseColor);
-
-        // Convert back to hex format
-        string newHexColor = $"#{randomColor:X6}";
-
-        return newHexColor;
-    }
-
-    private static int GenerateRandomColor(int baseColor)
-    {
-        Random random = new Random();
-
-        // Extract RGB components
-        int r = (baseColor >> 16) & 0xFF;
-        int g = (baseColor >> 8) & 0xFF;
-        int b = baseColor & 0xFF;
-
-        // Calculate hue, saturation, and lightness
-        double[] hsl = RGBtoHSL(r, g, b);
-
-        // Generate random hue value
-        double randomHue = random.NextDouble() * 360;
-
-        // Set the new hue value
-        hsl[0] = randomHue;
-
-        // Convert back to RGB
-        int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2]);
-
-        return (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
-    }
+    // private static int GenerateRandomColor(int baseColor)
+    // {
+    //     Random random = new Random();
+    //
+    //     // Extract RGB components
+    //     int r = (baseColor >> 16) & 0xFF;
+    //     int g = (baseColor >> 8) & 0xFF;
+    //     int b = baseColor & 0xFF;
+    //
+    //     // Calculate hue, saturation, and lightness
+    //     double[] hsl = RGBtoHSL(r, g, b);
+    //
+    //     // Generate random hue value
+    //     double randomHue = random.NextDouble() * 360;
+    //
+    //     // Set the new hue value
+    //     hsl[0] = randomHue;
+    //
+    //     // Convert back to RGB
+    //     int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2]);
+    //
+    //     return (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+    // }
     
-    public static string GenerateSlightlyDifferentShade(string hexColor)
+    public static string GenerateSlightlyDifferentShade(string hexColor, double degreeOfDifference)
     {
         // Validate input
         if (hexColor.Length != 7 || hexColor[0] != '#')
@@ -141,7 +141,7 @@ public class ColorHelper
         int baseColor = Convert.ToInt32(hexColor.Substring(1), 16);
 
         // Generate a slightly different shade in the same color family
-        int newColor = GenerateSlightlyDifferentShade(baseColor);
+        int newColor = GenerateSlightlyDifferentShade(baseColor, degreeOfDifference);
 
         // Convert back to hex format
         string newHexColor = $"#{newColor:X6}";
@@ -149,7 +149,7 @@ public class ColorHelper
         return newHexColor;
     }
 
-    private static int GenerateSlightlyDifferentShade(int baseColor)
+    private static int GenerateSlightlyDifferentShade(int baseColor, double degreeOfDifference)
     {
         // Extract RGB components
         int r = (baseColor >> 16) & 0xFF;
@@ -158,7 +158,7 @@ public class ColorHelper
 
         // Introduce randomization to lightness
         Random random = new Random();
-        double randomFactor = random.NextDouble() * 0.1 + 0.95; // Random factor between 0.95 and 1.05
+        double randomFactor = random.NextDouble() * degreeOfDifference + (1.0 - degreeOfDifference / 2); // Random factor between (1 - degreeOfDifference/2) and (1 + degreeOfDifference/2)
         int newR = (int)(r * randomFactor);
         int newG = (int)(g * randomFactor);
         int newB = (int)(b * randomFactor);
@@ -169,40 +169,6 @@ public class ColorHelper
         newB = Math.Max(0, Math.Min(255, newB));
 
         return (newR << 16) | (newG << 8) | newB;
-    }
-
-    private static double[] RGBtoHSL(int r, int g, int b)
-    {
-        double normalizedR = r / 255.0;
-        double normalizedG = g / 255.0;
-        double normalizedB = b / 255.0;
-
-        double max = Math.Max(normalizedR, Math.Max(normalizedG, normalizedB));
-        double min = Math.Min(normalizedR, Math.Min(normalizedG, normalizedB));
-
-        double h, s, l;
-        h = s = l = (max + min) / 2;
-
-        if (max == min)
-        {
-            h = s = 0; // achromatic
-        }
-        else
-        {
-            double d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-            if (max == normalizedR)
-                h = (normalizedG - normalizedB) / d + (normalizedG < normalizedB ? 6 : 0);
-            else if (max == normalizedG)
-                h = (normalizedB - normalizedR) / d + 2;
-            else if (max == normalizedB)
-                h = (normalizedR - normalizedG) / d + 4;
-
-            h /= 6;
-        }
-
-        return new double[] { h * 360, s, l };
     }
 
     private static int[] HSLtoRGB(double h, double s, double l)
