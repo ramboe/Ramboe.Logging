@@ -6,14 +6,21 @@
 }
 else
 {
-    <div style="padding: 10rem">
-        <h3 class="my-4">Welcome to RamboeLogging, please log in to inspect your logs</h3>
-        <MudPaper Class="pa-4">
-            <MudForm @ref="form" Model="LoginModel">
-                <MudTextField T="string" Label="Email" @bind-Value="@LoginModel.Email" Required="true" RequiredError="Email name is required!" InputType="InputType.Email" />
-                <MudTextField T="string" Label="Password" @bind-Value="@LoginModel.Password" Required="true" RequiredError="Password is required!" InputType="InputType.Password" />
-                <MudButton Disabled="form.IsValid" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto my-4" OnClick="SaveToLocalStorage">Login</MudButton>
-            </MudForm>
-        </MudPaper>
-    </div>
+
+    <MudGrid>
+        <MudItem md="2">
+        </MudItem>
+        <MudItem xs="12" md="8">
+    <h3 class="my-4">Welcome to RamboeLogging, please log in to inspect your logs</h3>
+            <MudPaper Class="pa-4">
+                <MudForm @ref="form" Model="LoginModel">
+                    <MudTextField T="string" Label="Email" @bind-Value="@LoginModel.Email" Required="true" RequiredError="Email name is required!" InputType="InputType.Email" />
+                    <MudTextField T="string" Label="Password" @bind-Value="@LoginModel.Password" Required="true" RequiredError="Password is required!" InputType="InputType.Password" />
+                    <MudButton Disabled="form.IsValid" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto my-4" OnClick="SaveToLocalStorage">Login</MudButton>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+        <MudItem md="2">
+        </MudItem>
+    </MudGrid>
 }
