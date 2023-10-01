@@ -121,7 +121,8 @@ public partial class Logs
         {
             // BackgroundColorForDoubles = ColorHelper.DarkenHexColor(BackgroundColorForDoubles, percentage);
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
-            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+            BackgroundColorForDoubles = ColorHelper.GenerateSlightlyDifferentShade("#BD76E9");
 
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#6099EB");
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#1a66d2");
@@ -148,7 +149,8 @@ public partial class Logs
         {
             // BackgroundColorForDoubles = ColorHelper.DarkenHexColor(BackgroundColorForDoubles, percentage);
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#258cfb");
-            BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+            // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#eab676");
+            BackgroundColorForDoubles = ColorHelper.GenerateSlightlyDifferentShade("#BD76E9");
 
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#6099EB");
             // BackgroundColorForDoubles = ColorHelper.GenerateRandomColor("#1a66d2");

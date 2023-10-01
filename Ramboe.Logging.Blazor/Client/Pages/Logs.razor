@@ -22,6 +22,7 @@
              Elevation="1"
              QuickFilter="@_quickFilter"
              Hideable="true"
+             RowStyleFunc="_rowStyleFunc"
              RowClick="@RowClicked"
              SelectedItemsChanged="@UpdateSelectedItems">
     <ToolBarContent>
@@ -34,16 +35,28 @@
     <Columns>
         <SelectColumn T="LogModel" Size="Size.Small" />
 
-        <TemplateColumn T="LogModel" Title="Id" CellStyleFunc="_cellStyleFunc">
+        @* <TemplateColumn T="LogModel" Title="Id" CellStyleFunc="_cellStyleFunc"> *@
+        @*     <CellTemplate> *@
+        @*         <LogMessageBox LogModel="@context.Item" /> *@
+        @*     </CellTemplate> *@
+        @* </TemplateColumn> *@
+        @* <PropertyColumn Property="x => x.raise_date" CellStyleFunc="_cellStyleFunc" /> *@
+        @* <PropertyColumn Hidden="!(string.IsNullOrEmpty(Level))" Property="x => x.level" SortBy="@_sortBy" CellStyleFunc="_cellStyleFunc"/> *@
+        @* <PropertyColumn Property="x => x.service" CellStyleFunc="_cellStyleFunc"/> *@
+        @* <PropertyColumn Property="x => x.message_short" CellStyleFunc="_cellStyleFunc"/> *@
+        @* <PropertyColumn Property="x => x.location_in_stacktrace" CellStyleFunc="_cellStyleFunc"/> *@
+
+
+        <TemplateColumn T="LogModel" Title="Id">
             <CellTemplate>
                 <LogMessageBox LogModel="@context.Item" />
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.raise_date" CellStyleFunc="_cellStyleFunc" />
-        <PropertyColumn Hidden="!(string.IsNullOrEmpty(Level))" Property="x => x.level" SortBy="@_sortBy" CellStyleFunc="_cellStyleFunc"/>
-        <PropertyColumn Property="x => x.service" CellStyleFunc="_cellStyleFunc"/>
-        <PropertyColumn Property="x => x.message_short" CellStyleFunc="_cellStyleFunc"/>
-        <PropertyColumn Property="x => x.location_in_stacktrace" CellStyleFunc="_cellStyleFunc"/>
+        <PropertyColumn Property="x => x.raise_date" />
+        <PropertyColumn Hidden="!(string.IsNullOrEmpty(Level))" Property="x => x.level" SortBy="@_sortBy" />
+        <PropertyColumn Property="x => x.service" />
+        <PropertyColumn Property="x => x.message_short" />
+        <PropertyColumn Property="x => x.location_in_stacktrace" />
     </Columns>
     <PagerContent>
         <MudDataGridPager T="LogModel" />
