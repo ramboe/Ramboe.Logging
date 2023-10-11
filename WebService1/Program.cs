@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Ramboe.Logging.DependencyInjection;
 using Serilog;
 using Serilog.Events;
@@ -18,7 +19,11 @@ const string _BASEURL = "https://localhost:7100";
 const string _CLIENTNAME = "clemensClient";
 
 builder.Services
-       .AddRamboeLoggingHttpClient(_BASEURL, _CLIENTNAME);
+       .AddRamboeLoggingHttpClient(_BASEURL, _CLIENTNAME)
+       .ConfigureHttpClient(c => c.DefaultRequestHeaders
+                                  .Accept
+                                  .Add(new MediaTypeWithQualityHeaderValue("application/json")
+                                  ));
 
 builder.Services
        .AddRamboeLoggingHttpClient<HttpWebService2Client>(_BASEURL);
