@@ -77,9 +77,30 @@ public static class StartupExtensions
                      .CreateLogger();
     }
 
-    public static IHttpClientBuilder AddTypedRamboeLoggingHttpClient<T>(this IServiceCollection services, string baseAddress) where T : class
+    /// <summary>
+    /// Add typed HttpClient with RamboeLogging
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="baseAddress"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static IHttpClientBuilder AddRamboeLoggingHttpClient<T>(this IServiceCollection services, string baseAddress) where T : class
     {
         return services.AddHttpClient<T>()
+                       .AddHttpMessageHandler<RamboeTraceIdentifierHandler>()
+                       .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseAddress));
+    }
+
+    /// <summary>
+    /// Add named HttpClient with RamboeLogging
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="baseAddress"></param>
+    /// <param name="httpClientName"></param>
+    /// <returns></returns>
+    public static IHttpClientBuilder AddRamboeLoggingHttpClient(this IServiceCollection services, string baseAddress, string httpClientName)
+    {
+        return services.AddHttpClient(httpClientName)
                        .AddHttpMessageHandler<RamboeTraceIdentifierHandler>()
                        .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseAddress));
     }

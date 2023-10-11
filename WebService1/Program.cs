@@ -13,8 +13,15 @@ builder.Services.AddRamboeLogging(connectionString, LogEventLevel.Error);
 builder.Host.UseSerilog();
 
 //Add tracable http header to outgoing http requests to track errors across multiple services
+const string _BASEURL = "https://localhost:7100";
+
+const string _CLIENTNAME = "clemensClient";
+
 builder.Services
-       .AddTypedRamboeLoggingHttpClient<HttpWebService2Client>("https://localhost:7100");
+       .AddRamboeLoggingHttpClient(_BASEURL, _CLIENTNAME);
+
+builder.Services
+       .AddRamboeLoggingHttpClient<HttpWebService2Client>(_BASEURL);
 #endregion
 
 var app = builder.Build();
@@ -25,7 +32,7 @@ app.UseRamboeExceptionLoggingMiddleware();
 
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/error/{id}", throwCustomErrorTest);
-app.MapGet("/error-across-services/{id}", accros);
+app.MapGet("/error-across-services/{id}", accrosNamed);
 
 app.Run();
 
@@ -36,7 +43,13 @@ void throwCustomErrorTest(string id)
     throw new Exception($"example error here {id}");
 }
 
-async Task accros(HttpWebService2Client client)
+async Task accrosNamed(IHttpClientFactory httpClientFactory)
+{
+    var client = httpClientFactory.CreateClient(_CLIENTNAME);
+    var result = await client.GetStringAsync("");
+}
+
+async Task accrosTyped(HttpWebService2Client client)
 {
     await client.GetAsync();
 }
